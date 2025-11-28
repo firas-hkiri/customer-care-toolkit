@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Customer Care Toolkit — Firas Hkiri</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" />
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --muted: #6b7280;
+      --text: #0f1724;
+      --accent: #0d6efd;
+      --accent-2: #06b6d4;
+      --glass: rgba(13, 110, 253, 0.06);
+      --radius: 12px;
+      --shadow: 0 8px 24px rgba(15, 23, 36, 0.06);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b1220;
+      --panel: #071227;
+      --muted: #93a3b8;
+      --text: #e6f0fb;
+      --accent: #6bb8ff;
+      --accent-2: #60e0d6;
+      --glass: rgba(107, 184, 255, 0.06);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: linear-gradient(180deg, var(--bg), rgba(0, 0, 0, 0));
+      color: var(--text);
+    }
+
+    /* Left column will auto-size to fit long nav titles (up to a reasonable max) */
+    .app {
+      display: grid;
+      grid-template-columns: minmax(220px, max-content) 1fr;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 28px auto;
+      padding: 20px;
+    }
+
+    /* Header (search + toggles) */
+    header.site-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    /* center area holds search and tips */
+    .center-search {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .search {
+      width: 760px;
+      max-width: calc(100% - 40px);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 8px 12px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(15, 23, 36, 0.04);
+    }
+
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      font-size: 14px;
+      color: var(--text);
+      padding: 6px 4px;
+    }
+
+    .search .kbd {
+      font-size: 12px;
+      color: var(--muted);
+      border-left: 1px solid rgba(15, 23, 36, 0.04);
+      padding-left: 10px;
+      margin-left: 8px;
+    }
+
+    /* small tip box below search */
+    .tip-box {
+      margin-top: 8px;
+      width: 760px;
+      max-width: calc(100% - 40px);
+      background: linear-gradient(90deg, rgba(13, 110, 253, 0.03), rgba(6, 182, 212, 0.02));
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(15, 23, 36, 0.03);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .top-right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid rgba(15, 23, 36, 0.06);
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--text);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+
+    /* Sidebar */
+  aside.sidebar {
+    position: relative;               /* allows version number pinning */
+    display: flex;
+    flex-direction: column;           /* so footer stays at bottom */
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 16px;
+    height: calc(100vh - 120px);
+    overflow: hidden;                 /* removes transparent gradient footer */
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(15, 23, 36, 0.04);
+  }
+
+    .sidebar h3 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Nav buttons won't wrap their text */
+    .nav button {
+      text-align: left;
+      background: transparent;
+      border: 0;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .nav button:hover {
+      background: var(--glass)
+    }
+
+    .nav button.active {
+      background: linear-gradient(90deg, rgba(13, 110, 253, 0.12), rgba(6, 182, 212, 0.06));
+      color: var(--accent);
+      box-shadow: 0 6px 18px rgba(13, 110, 253, 0.06);
+    }
+
+    /* Content area */
+    main.content {
+      min-height: 70vh;
+    }
+
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .content-title {
+      font-size: 20px;
+      font-weight: 700
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .btn {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 600
+    }
+
+    .btn.ghost {
+      background: transparent;
+      border: 1px solid rgba(15, 23, 36, 0.06)
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 8px 20px rgba(13, 110, 253, 0.12)
+    }
+
+    .subcards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+      align-items: start;
+    }
+
+    .subcard {
+      background: var(--panel);
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(15, 23, 36, 0.04);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform .14s ease, box-shadow .14s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      height: auto;
+    }
+
+    .subcard:hover {
+      transform: translateY(-6px)
+    }
+
+    .subcard h4 {
+      margin: 0 0 6px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .subcard p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: normal
+    }
+
+    .subcard.selected {
+      background: linear-gradient(90deg, rgba(13, 110, 253, 0.08), rgba(6, 182, 212, 0.03));
+      box-shadow: 0 10px 26px rgba(13, 110, 253, 0.04);
+      border: 1px solid rgba(13, 110, 253, 0.08);
+    }
+
+    /* Detail area: each line in its own container */
+    .detail-area {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+
+    .line-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.00));
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid rgba(15, 23, 36, 0.04);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .line-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px
+    }
+
+    .line-text {
+      font-size: 14px;
+      color: var(--text);
+      word-break: break-word;
+      white-space: pre-line;
+      line-height: 1.4;
+      padding-left: 4px;
+    }
+
+    .line-meta {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    /* copy button */
+    .copy-line {
+      background: transparent;
+      border: 1px solid rgba(15, 23, 36, 0.06);
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 600
+    }
+
+    .copy-line.small {
+      padding: 6px 8px;
+      font-size: 13px
+    }
+
+    /* a small non-copyable bullet/icon at line start */
+    .bullet-icon {
+      display: inline-block;
+      width: 14px;
+      text-align: center;
+      margin-right: 8px;
+      color: var(--accent);
+      font-weight: 700;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    footer {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .sidebar-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(15, 23, 36, 0.08);
+  margin: 250px 0 16px 0;
+}
+
+ /* Modern signature styling */
+.signature-modern {
+  margin-top: auto;         /* pushes it down */
+    padding-bottom: 40px;     /* space above version number */
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.signature-modern,
+.signature-modern .sig-name {
+  color: var(--text);
+}
+
+.signature-modern .sig-icon {
+  display: inline-flex;
+  padding: 6px;
+  border-radius: 8px;
+  color: var(--accent);
+  transition: 0.2s ease;
+}
+
+.signature-modern .sig-icon:hover {
+  background: var(--glass);
+  color: var(--accent-2);
+}
+
+/* Version number in corner */
+.sidebar-version {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  font-size: 11px;
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+/* Ensure the sidebar is a positioned container */
+aside.sidebar {
+  position: relative;
+}
+
+    /* responsive */
+    @media (max-width:980px) {
+      .app {
+        grid-template-columns: 1fr;
+        padding: 12px
+      }
+
+      aside.sidebar {
+        height: auto;
+        order: 2
+      }
+
+      main.content {
+        order: 1
+      }
+
+      .center-search {
+        order: 2;
+        width: 100%
+      }
+
+      .search {
+        width: 100%
+      }
+
+      .tip-box {
+        width: 100%
+      }
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+  <div class="app">
+    <!-- Header row: spans columns -->
+    <header class="site-header">
+      <div class="brand">
+        <div class="logo">FH</div>
+        <div>
+          <div class="title">Customer Care Toolkit</div>
+          <div class="subtitle">Interactive quick-reply workspace</div>
+        </div>
+      </div>
+
+      <div class="center-search">
+        <div class="search" role="search" aria-label="Global search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="opacity:.8">
+            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <input id="globalSearch" type="search"
+            placeholder="Search topics, subtopics or any line — try: replacement, design, WeTransfer..."
+            autocomplete="off" />
+          <div class="kbd">Ctrl K</div>
+
+          <!-- Search Results Section -->
+          <div id="searchResults" class="search-results" style="display:none;"></div>
+        </div>
+
+        <!-- Tip box moved directly under the search bar as requested -->
+        <div class="tip-box" role="note" aria-live="polite">
+          <svg width="16" height="16" viewBox="0 0 24 24" style="opacity:.9">
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.2"></circle>
+          </svg>
+          <div>
+            Tips: Click a topic to show subcategories. | Click a subcategory
+            to reveal lines. | Use the search (Ctrl/Cmd+K) to filter quickly.
+          </div>
+        </div>
+      </div>
+
+      <div class="top-right">
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark / light mode">
+          <svg id="sun" width="16" height="16" viewBox="0 0 24 24" style="display:inline-block">
+            <path d="M12 3v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 19v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M3 12h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M19 12h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+          <span style="font-weight:700">Dark / Light </span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+ <aside class="sidebar" aria-label="Main navigation">
+  <h3 style="margin-bottom: 30px;">Main topics</h3>
+
+ <div class="sidebar-scroll">
+  <nav class="nav" role="navigation">
+    <button data-topic="chat" class="active">Chat Templates</button>
+    <button data-topic="email">Email Templates</button>
+    <button data-topic="replacement">Replacement & Refunds</button>
+    <button data-topic="shipping">Shipping / Tracking</button>
+    <button data-topic="preorder">Pre-Order & Probing</button>
+    <button data-topic="design">Design Support</button>
+    <button data-topic="technical">Technical Help</button>
+    <button data-topic="operations">Operations & Accounts</button>
+    <button data-topic="caseNotes">Case Notes</button>
+  </nav>
+  </div>
+
+  <div class="sidebar-divider" ></div>
+
+  <!-- Modern Signature (clean, centered, minimal) -->
+  <div class="signature-modern">
+    <span class="sig-name">Made by Firas Hkiri</span>
+
+    <a href="https://www.linkedin.com/in/firas-hkiri-8b5898249"
+      class="sig-icon"
+      target="_blank"
+      rel="noopener noreferrer"
+      title="Visit my LinkedIn profile">
+
+      <!-- Clean modern LinkedIn icon -->
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 24h5V7H0v17zm7.5-17h4.4v2.3h.1c.6-1.1 2-2.3 4.1-2.3 4.4 0 5.3 2.9 5.3 6.7V24h-5v-7.6c0-1.8 0-4.3-2.7-4.3-2.7 0-3.1 2-3.1 4.1V24H7.5V7z"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- Mini version number -->
+  <div class="sidebar-version">v1.0.0</div>
+</aside>
+
+
+    <!-- Main content -->
+    <main class="content" role="main">
+      <div class="content-header">
+        <div>
+          <div class="content-title" id="contentTitle" style="margin-bottom: 30px;">
+            Pre-Order Cases
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn ghost" id="backBtn" style="display:none">
+            ← Back
+          </button>
+          <!-- Copy whole section removed by request -->
+        </div>
+      </div>
+
+      <!-- Subcards area -->
+      <div class="subcards" id="subcards" aria-live="polite" style="margin-bottom: 30px;">
+        <!-- JS will populate -->
+      </div>
+
+      <!-- Detailed lines displayed as separate cards -->
+      <div id="detailWrapper" style="display:none; ">
+        <hr style="margin-top: 30px;" class="rounded" />
+
+        <div class="detail-area" id="detailArea" aria-live="polite" style="margin-top: 30px;">
+          <!-- JS will populate -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    /*
+IMPORTANT: This code is intentionally commented and structured so it's easy for you to add
+new topics, subcategories, and lines.
+
+How to add content:
+- Scroll to the DATA object below.
+- Add a new top-level key (e.g. "mytopic": { title: "...", subtitle: "...", subcategories: { "Sub name": [ "line1", "line2" ] } })
+- Then add a corresponding <button data-topic="mytopic">Label</button> inside the sidebar nav (HTML).
+*/
+
+    const DATA = {
+      chat: {
+        title: "Chat Templates",
+        subcategories: {
+          /* ----------------------------------------------------
+     1. Greeting & Appreciation
+     ---------------------------------------------------- */
+          "Greeting & Appreciation": [
+            "Thank you for contacting Vistaprint today!",
+            "Thank you for reaching out. I’ll be happy to assist you.",
+            "Thank you for your patience while we work through this together.",
+            "I appreciate you taking the time to contact us.",
+            "It’s a pleasure assisting you today.",
+            "I hope all is well with you and your family.",
+            "I hope you're having a great day so far.",
+          ],
+
+          /* ----------------------------------------------------
+     2. Empathy, Acknowledgment & Reassurance
+     ---------------------------------------------------- */
+          "Empathy & Reassurance": [
+            "I’m truly sorry for any inconvenience this has caused.",
+            "I’m deeply sorry for any inconvenience this may have caused.",
+            "I completely understand how important this is for you.",
+            "I understand how frustrating this can be. I’m here to help.",
+            "I understand how important it is to receive your order in great shape so I apologize for the inconvenience this has caused.",
+            "Please note that this is not a typical VistaPrint experience and we will work on fixing that for you promptly !",
+            "Please rest assured, I’ll take care of this for you right away.",
+            "I hope that you felt my genuine intention to resolve your concern.",
+            "Thank you for bringing this to our attention. I’ll make sure it’s resolved.",
+            "Thank you so much for your patience and understanding with this.",
+          ],
+
+          /* ----------------------------------------------------
+     3. Soft Check-In & Engagement
+     ---------------------------------------------------- */
+          "Check-In / Engagement": [
+            "Are you still with me?",
+            "Are we still connected?",
+            "Would you allow me 1–2 minutes while I check this for you?",
+            "Thanks for your patience, still checking on that for you.",
+            "Is there anything else you'd like me to double-check for you?",
+          ],
+
+          /* ----------------------------------------------------
+     4. Hold Messages (Polished Variants)
+     ---------------------------------------------------- */
+          "Hold Messages": [
+            "May I kindly have 1–2 minutes to review this for you?",
+            "Thank you for your patience. I’m still checking, just a moment please.",
+            "I appreciate your patience. I’ll be right back with an update.",
+            "Thank you for holding. I’m almost done checking this.",
+            "Thanks for waiting. I’m confirming the details for you now.",
+          ],
+
+          /* ----------------------------------------------------
+     5. Explanation / Process Guidance
+     ---------------------------------------------------- */
+          "Explanation & Process Guidance": [
+            "Let me explain how this works so everything is clear:",
+            "Here’s what I can do for you right now:",
+            "To give you the most accurate update, I’m checking your order details.",
+            "Here’s what will happen next with your order:",
+            "Just to set expectations, here is how the process usually goes:",
+          ],
+
+          /* ----------------------------------------------------
+     6. Issue Resolution Confirmation
+     ---------------------------------------------------- */
+          "Resolution Confirmation": [
+            "I’ve taken care of that for you, everything is now updated.",
+            "Your request has been processed successfully.",
+            "I’ve made the changes you requested, you’re all set!",
+            "That’s now resolved. is there anything else I can help you with?",
+            "I’ve completed this action and sent a confirmation to your email.",
+          ],
+
+          /* ----------------------------------------------------
+     7. Chat Disconnection & Safety Closure
+     ---------------------------------------------------- */
+          "Disconnection Notices": [
+            "It seems we may have been disconnected. I'll remain available for a moment in case you return.",
+            "I haven’t heard from you in a while, are you still there?",
+            "Due to inactivity, the chat may close soon automatically. Please send a message if you're still with me.",
+            "I am afraid due to the length of the no-response time, the chat session will end automatically. Please don't hesitate to reach us anytime through our Help Center: https://www.vistaprint.com/customer-care/help-center/",
+          ],
+
+          /* ----------------------------------------------------
+     8. Closing Messages
+     ---------------------------------------------------- */
+          "Closing Messages": [
+            "Thank you for choosing Vistaprint! Have a wonderful day.",
+            "It was a pleasure assisting you, stay safe and have a great day!",
+            "If you need anything else, feel free to reach out anytime.",
+            "Thank you again for contacting us. Take care!",
+            "Please watch for the survey email 'Did we help?' after 24 hours.",
+          ],
+        },
+      },
+
+      email: {
+        title: "Email Templates",
+        subcategories: {
+
+          /* ----------------------------------------------------
+             1. Post-Chat Follow-Up
+          ---------------------------------------------------- */
+          "Post-Chat Follow-Up": [
+            `Thank you for contacting Vistaprint today. I hope you’re doing well.
+I’m reaching out because we got disconnected during the chat, and I wanted to ensure you still get full support.
+If you need further assistance, feel free to reply to this email or reach us anytime via Chat, Email or Phone.
+Thank you for choosing Vistaprint!`,
+
+            `Thank you for chatting with us earlier. I wanted to follow up and make sure everything is all set.
+If you still need help with anything, you can reply directly to this message and I’ll be happy to continue assisting you.`,
+
+            `I hope you're having a wonderful day.
+I’m following up regarding our recent chat session as the connection was lost. Your satisfaction is important to us, so please let me know if there’s anything else you’d like help with.`
+          ],
+
+          /* ----------------------------------------------------
+             2. Replacement Confirmation Email
+          ---------------------------------------------------- */
+          "Replacement Confirmation": [
+            `Thank you for contacting Vistaprint.
+I’ve processed a free replacement for your order, and it will arrive on or before (Date).
+You will receive a tracking email once it ships. There is no need to return your original items — feel free to keep or recycle them.
+If you need anything else, just let me know!`,
+
+            `Your replacement order has been successfully issued.
+You will receive the tracking details once the package leaves our facility.
+Please disregard any automated cancellation or credit emails — those were used internally to place your replacement.`,
+
+            `I'm sorry for the inconvenience caused by your recent order.
+I’ve taken care of a free replacement for you, using the fastest shipping available.
+You’ll receive all confirmation details in your email shortly.`
+          ],
+
+          /* ----------------------------------------------------
+             3. Refund Confirmation Email
+          ---------------------------------------------------- */
+          "Refund Confirmation": [
+            `Thank you for reaching out to Vistaprint.
+I’ve processed a refund of £XX.XX to your original payment method. You will receive a confirmation shortly.
+Refunds typically appear within 3–5 business days depending on your bank.
+Please feel free to reply if you need anything else.`,
+
+            `Your refund has now been completed. A confirmation email should arrive shortly.
+If you have any further questions or need assistance with a future order, I’d be happy to help.`,
+
+            `This is to confirm that your refund has been successfully issued.
+Please allow a few business days for it to reflect on your account depending on your bank provider.`
+          ],
+
+          /* ----------------------------------------------------
+             4. Request for Images / Verification
+          ---------------------------------------------------- */
+          "Verification Requests": [
+            `Thank you for contacting Vistaprint.
+To assist you further, could you please send a picture of the issue?
+This will help us document the situation and process the best resolution for you as quickly as possible.`,
+
+            `To continue with your request, would you kindly share a photo of the concern?
+You can reply directly to this email with the attachments.`,
+
+            `Could you please provide images showing the defect?
+Once received, I’ll review them right away and help you with the appropriate solution.`
+          ],
+
+          /* ----------------------------------------------------
+             5. Production Delay / Missed SLA Email
+          ---------------------------------------------------- */
+          "Production Delay Notices": [
+            `Thank you for your patience.
+I’m reaching out regarding your order — there is an unexpected production delay.
+I’ve escalated this as urgent, and I’ll update you as soon as the production team provides more information.
+We sincerely apologize for the inconvenience.`,
+
+            `I’m sorry to inform you that your order is currently delayed in production.
+Rest assured, I’ve escalated the issue to the concerned team to speed up the process.
+I will follow up with you as soon as I have an update. Thank you for your understanding.`,
+
+            `We regret the delay affecting your order. This does not reflect our usual standard.
+The case has been escalated urgently, and we’ll update you as soon as new information becomes available.`
+          ],
+
+          /* ----------------------------------------------------
+             6. Tax Exemption Email
+          ---------------------------------------------------- */
+          "Tax Exemption": [
+            `Thank you for contacting Vistaprint.
+To apply for tax exemption, please send the tax documentation along with the email address linked to your account to:
+ExemptSalesTax@vista.com
+Our tax team will review it and get back to you within 3–5 business days.`,
+
+            `Here is the information needed for your tax exemption request:
+• Email linked to your Vistaprint account
+• Your tax exemption documents
+Please send them to ExemptSalesTax@vista.com.
+You will receive confirmation once the request is approved.`
+          ],
+
+          /* ----------------------------------------------------
+             7. Design Services / Edits Email
+          ---------------------------------------------------- */
+          "Design Services": [
+            `Thank you for contacting Vistaprint.
+I’ve completed the requested edits to your design. Please refresh the page and check the updated version in your Projects section under “VP COPY”.
+Let me know if you’d like anything changed.`,
+
+            `I’ve gone ahead and made the adjustments you requested.
+You can view the updated version in your Projects section. If you need additional revisions, feel free to let me know.`,
+
+            `Your design has been fully updated. Please refresh the page and confirm if everything looks good.
+I’m happy to make more edits if needed.`
+          ],
+
+          /* ----------------------------------------------------
+             8. Pre-Order / General Inquiry Email
+          ---------------------------------------------------- */
+          "General Inquiry Responses": [
+            `Thank you for reaching out to Vistaprint.
+I’d be happy to help with your question. Could you please provide a little more detail so that I can assist you accurately?`,
+
+            `Thank you for your message.
+To make sure I provide the best recommendation, may I ask how you plan to use this product?`,
+
+            `I hope you're having a great day.
+I’ll be happy to guide you — could you let me know a bit more about your goals for this order?`
+          ],
+
+          /* ----------------------------------------------------
+             9. Region Mismatch (EU/US) Email
+          ---------------------------------------------------- */
+          "Region Transfer": [
+            `Thank you for contacting Vistaprint.
+It appears that your inquiry belongs to the European region, and support for this must be handled on their side.
+I will transfer your case to the European team so they can assist you more accurately.
+Thank you for your understanding.`,
+
+            `This is the US support channel. For your account, the correct region is Europe.
+I’ve shared your details with the EU support team, and they will contact you shortly.`
+          ],
+
+          /* ----------------------------------------------------
+             10. End-of-Email Courtesy Closings
+          ---------------------------------------------------- */
+          "Email Closing Lines": [
+            "Thank you for choosing Vistaprint. Have a wonderful day!",
+            "If you have any additional questions, feel free to reply anytime.",
+            "We appreciate your business — stay safe and have a great day!",
+            "Thank you again for reaching out. We're always happy to help."
+          ]
+        },
+      },
+
+      replacement: {
+        title: "Replacement & Refunds",
+        subcategories: {
+          /* ---------------------------------------------------------
+     1. Replacement — General Assurances & Best Practices
+  --------------------------------------------------------- */
+          "General Replacement": [
+            "I’ll be happy to arrange a free replacement for you right away.",
+            "You may dispose of the defective items, no return is needed.",
+            "Your replacement will be processed with the fastest available shipping option.",
+            "Rest assured, I’ll make sure the replacement arrives in great condition.",
+            "I understand how important this is, so I’ll take care of it immediately.",
+            "If the original arrives later, you may keep both shipments at no extra cost.",
+          ],
+
+          /* ---------------------------------------------------------
+     2. Smart Replace (Same Order Number)
+  --------------------------------------------------------- */
+          "Smart Replace (Same Order Number)": [
+            "I have replaced your order now, kindly note that your order number is the same: x so the system will not generate a new confirmation email, you will receive an email with the tracking link however, to keep an eye on your order once we send it to shipping. ",
+            "I’ve issued a smart replacement; the order number remains the same.",
+            "A new confirmation email will *not* be generated for smart replacements.",
+            "You will receive a tracking email once the package has shipped.",
+            "You may keep the original items if they arrive later, no return needed.",
+          ],
+
+          /* ---------------------------------------------------------
+     3. From Scratch Replacement (New Order Number)
+  --------------------------------------------------------- */
+          "From Scratch Replacement (New Order Number)": [
+            "I’ve placed a new replacement order for you. Your new order number is: (Order ID).",
+            "You will receive a confirmation email followed by another email with your tracking details once it ships.",
+            "Please disregard any cancellation or merchandise credit emails, these are system-generated and were used to place the replacement on your behalf.",
+            "The new replacement was placed using the fastest available shipping method.",
+          ],
+
+          /* ---------------------------------------------------------
+     4. Apology + Replacement Template
+  --------------------------------------------------------- */
+          "Apology & Resolution": [
+            "I sincerely apologize for the inconvenience you experienced with your order.",
+            "To resolve this quickly, I’ve issued a free replacement with the fastest delivery option.",
+            "You will receive the replacement on or before (date).",
+            "Thank you for your patience while I make this right.",
+          ],
+
+          /* ---------------------------------------------------------
+     5. Refunds, Credits & Policy
+  --------------------------------------------------------- */
+          "Refunds & Merchandise Credit": [
+            "I’ve processed a refund for £XX.XX to your original payment method. You will receive a confirmation email shortly.",
+            "Refunds typically appear in your bank account within 3–5 business days, depending on your provider.",
+            "I can also issue Merchandise Credit for you, it is added immediately and valid for 1 year.",
+            "You can view your available credits under the Payment & Delivery section: https://www.vistaprint.co.uk/ps/",
+            `To use your merchandise credit:
+      1. Add your items to the cart and go to checkout.
+      2. On the Payment page, check the box to view your available credit.
+      3. Select “Yes, apply”.
+      4. Your total will refresh automatically with the credit applied.`,
+          ],
+
+          /* ---------------------------------------------------------
+     6. Verification / Investigation (Image Requests)
+  --------------------------------------------------------- */
+          "Issue Verification & Support": [
+            "Could you please share a photo of the issue so I can document it and assist you further?",
+            "Would you tell me what the specific issue is so I can verify it correctly?",
+            "How many items were affected, please?",
+            "Thank you for sharing the image, this helps me resolve the issue faster.",
+          ],
+        },
+      },
+
+      shipping: {
+        title: "Shipping, Tracking & Delivery",
+        subcategories: {
+          "Delivery Expectations": [
+            "Please note that our delivery dates are determined by our manufacturing department,which carefully schedules them based on fulfillment, production, and dispatch timelines. Unfortunately, we are unable to customize delivery dates as we must adhere to these schedules to ensure a smooth and efficient experience for all our customers.",
+            "While we can't guarantee an earlier delivery date, there is a good possibility that some items might arrive before the estimated delivery date. However, I want to be transparent, I can’t make any promises, as it depends on the production and shipping processes.",
+            "It could reach you sooner depending on delivery and production but I apologize that I cannot confirm that.",
+          ],
+          "Production / Delivery Delay": [
+            "I understand how important this is — I've escalated your case as urgent.",
+            "I will update you as soon as I receive further information.",
+            "Thank you for your patience while we resolve this.",
+          ],
+          "Tracking Support": [
+            "You will receive an email with a tracking link once we send your order to shipping.",
+            "You can also track your order through your Order History.",
+            "Tracking information will be emailed as soon as the order ships.",
+            "If the tracking number is not updating, it may take a few hours to sync.",
+            "Once you place your order, you will receive a confirmation email for it and we email you the tracking link once we send it to the shipping company.",
+          ],
+        },
+      },
+
+      preorder: {
+        title: "Pre-Order Discovery & Customer Needs",
+        subcategories: {
+          "Business Needs Discovery": [
+            "Could you tell me a bit more about your business and how you plan to use this product? That way I can suggest the best options.",
+            "What are the main goals you want to achieve with this order?",
+            "Do you already have branding or a visual style in place?",
+            "I'd love to understand your vision for this project so I can guide you toward the most suitable products.",
+          ],
+
+          "Use-Case Clarification": [
+            "How will these items be used — for marketing, internal use, events, or giveaways?",
+            "Are you looking for something long-lasting, budget-friendly, or premium?",
+            "How many people do you expect to distribute these to?",
+            "Do you need these products for a specific event or deadline?",
+          ],
+
+          "Wedding Probing": [
+            "Have you already created other wedding stationery pieces?",
+            "I can help suggest items that match your current theme.",
+            "If you don’t mind me asking, could you tell me a bit more about the rest of your wedding stationery, have you already created the other pieces as well? I'd love to help you find coordinating products that match your theme, and if you'd like, I can even apply your current design to those items to keep everything beautifully consistent.",
+          ],
+
+          "Promoting Additional Services": [
+            "If you ever need personalized design help, we offer an affordable design service with revisions included.",
+            "We also offer a complete range of marketing products like flyers, banners, signs, apparel, and more.",
+            "If you're planning an event or launch, I can recommend matching products to make everything cohesive.",
+          ],
+        },
+      },
+
+      design: {
+        title: "Design Support & File Guidance",
+        subcategories: {
+          "Design Review & Expert Feedback": [
+            "Your design appears clear and high-resolution, so it should print well.",
+            "The main elements are within the safety area and aligned correctly.",
+            "I can help ensure your design is balanced, readable, and on brand.",
+            "If you'd like, I can adjust spacing, alignment, or layout suggestions.",
+          ],
+
+          "Probing & Customer Preferences": [
+            "Do you have a preferred style — minimal, modern, bold, elegant, or playful?",
+            "Are there specific colors or brand guidelines you want us to follow?",
+            "Is there any information you'd like to highlight more prominently?",
+            "What contact details do you prefer to be most visible to customers?",
+          ],
+
+          "Contact Details & Enhancements": [
+            "I can add or update your contact information if you'd like.",
+            "I can include icons for phone, email, website, or social media to make the design cleaner.",
+            "I can help position your details in a way that looks professional and easy to read.",
+          ],
+
+          "Photo & Quality Checks": [
+            "The photos you uploaded appear low-resolution — higher-quality images will print much sharper.",
+            "Do you happen to have the original files or higher-quality versions?",
+            "If the file is a photo, the elements can’t be edited individually because they’re not separate layers.",
+            "If you have the original design file (PDF/PSD/AI), feel free to upload it for better editing support.",
+          ],
+
+          "Editing Uploaded Files": [
+            "Since the file is an image, individual elements cannot be edited directly.",
+            "We can cover old information with shapes and add new text where needed.",
+            "For best results, upload high-resolution or original artwork files.",
+            "Designs are printed as a single job — updating one element updates the whole project.",
+          ],
+
+          "Copying / Reusing Designs": [
+            "You can copy your previous design by pressing CTRL + A → CTRL + C → opening a new product → CTRL + V.",
+            "To use the same design for another colleague, duplicate the project and update the name or details.",
+          ],
+        },
+      },
+
+      technical: {
+        title: "Technical Assistance",
+        subcategories: {
+          "Browser & Refresh": [
+            "Are you using Google or Safari please?",
+            "We recommend using Google Chrome for best performance.",
+            "Please refresh the page and try again.",
+            "You may refresh by clicking the circular arrow on the upper side to reload please.",
+            "Clearing cache sometimes resolves loading issues.",
+          ],
+          "Important Links": [
+            "Saved projects: https://www.vistaprint.com/my-account/design/projects",
+            "Offers and promotions: https://www.vistaprint.com/offers",
+          ],
+          "Sending Images via WeTransfer": [
+            "Use WeTransfer to upload images and share the link with the customer.",
+          ],
+        },
+      },
+
+      operations: {
+        title: "Operations, Account & Appointments",
+        subcategories: {
+          "Account Deletion": [
+            "My Account → Account Settings → Security → Start Process → Delete Account.",
+          ],
+          "Rescheduling Appointments": [
+            "My Design Services → Find Appointment → Reschedule → Confirm.",
+          ],
+          "Tax Exemption": [
+            "Email ExemptSalesTax@vista.com with account email + documents.",
+            "Approval time: 3–5 business days.",
+          ],
+        },
+      },
+
+      caseNotes: {
+        title: "Case Notes Templates",
+        subcategories: {
+          "Case Notes Format": [
+            `Contact Reason:
+  Resolution:
+  Follow-up Action:
+  Order Number / Doc ID / Project ID / Domain:
+  Customer's Name (if not account holder):`,
+          ],
+        },
+      },
+
+
+    };
+
+    /* ---------- Utility functions ---------- */
+
+    /**
+     * Remove leading bullets or numeric markers and trim whitespace.
+     * This helps display lines without the leading '•' while keeping original DATA intact.
+     */
+    function cleanLineText(raw) {
+      if (!raw) return "";
+      // remove common leading bullets (• or - or numbers like "1."), and leading whitespace
+      return raw
+        .replace(/^[\s]*[•\-\u2022]?\s*/, "")
+        .replace(/^\d+\.\s*/, "")
+        .trim();
+    }
+
+    /**
+     * Create a short description for a subcategory.
+     * We derive it from the first line(s) and remove leading bullets and trailing colons.
+     */
+    function makeSubDescription(lines) {
+      if (!lines || !lines.length) return "";
+      // prefer the first line that's more than a few chars
+      const cand = lines[0];
+      let desc = cleanLineText(cand);
+      // remove trailing ":" if that's present
+      desc = desc.replace(/:$/, "").trim();
+      // truncate if too long
+      if (desc.length > 140) desc = desc.slice(0, 137) + "...";
+      return desc;
+    }
+
+    /* ---------- DOM refs & state ---------- */
+    let currentTopic = "chat";
+    let currentSub = null;
+
+    const navButtons = document.querySelectorAll("aside.sidebar .nav button");
+    const contentTitle = document.getElementById("contentTitle");
+    const contentSubtitle = document.getElementById("contentSubtitle");
+    const subcardsEl = document.getElementById("subcards");
+    const detailArea = document.getElementById("detailArea");
+    const backBtn = document.getElementById("backBtn");
+    const globalSearch = document.getElementById("globalSearch");
+    const searchResults = document.getElementById("searchResults") || null;
+
+    /* ---------- Sidebar navigation ---------- */
+    navButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        navButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const topic = btn.dataset.topic;
+        openTopic(topic);
+      });
+    });
+
+    /* Open a topic and render subcards */
+    function openTopic(topicKey) {
+      currentTopic = topicKey;
+      currentSub = null;
+      const topic = DATA[topicKey];
+      if (!topic) return;
+
+      contentTitle.innerText = topic.title;
+      backBtn.style.display = "none";
+
+      subcardsEl.innerHTML = "";
+      detailArea.innerHTML = "";
+
+      // HIDE divider + detail area
+      document.getElementById("detailWrapper").style.display = "none";
+
+      for (const subName in topic.subcategories) {
+        const lines = topic.subcategories[subName];
+        const card = document.createElement("div");
+        card.className = "subcard";
+        card.tabIndex = 0;
+        card.dataset.sub = subName;
+
+        const desc = makeSubDescription(lines);
+        card.innerHTML = `<h4 title="${escapeHtml(subName)}">${escapeHtml(
+          subName
+        )}</h4><p>${escapeHtml(desc)}</p>`;
+
+        card.addEventListener("click", () =>
+          openSub(topicKey, subName, card)
+        );
+        card.addEventListener("keyup", (e) => {
+          if (e.key === "Enter") openSub(topicKey, subName, card);
+        });
+
+        subcardsEl.appendChild(card);
+      }
+    }
+
+    /* Open a subcategory and render lines */
+    function openSub(topicKey, subName, cardEl) {
+      currentSub = subName;
+      document.getElementById("detailWrapper").style.display = "block"; // SHOW
+      backBtn.style.display = "inline-flex";
+      const topic = DATA[topicKey];
+      contentTitle.innerText = topic.title + " — " + subName;
+      detailArea.innerHTML = "";
+
+      // highlight selected subcard (simple class toggle)
+      document
+        .querySelectorAll(".subcard")
+        .forEach((c) => c.classList.remove("selected"));
+      if (cardEl) cardEl.classList.add("selected");
+
+      const lines = topic.subcategories[subName] || [];
+      lines.forEach((line, idx) => {
+        const cleaned = cleanLineText(line);
+        const card = document.createElement("div");
+        card.className = "line-card";
+
+        // layout:
+        // [bullet-icon][text...]    [copy button]
+        card.innerHTML = `
+      <div class="line-top">
+        <div style="min-width:0;display:flex;align-items:flex-start;gap:8px">
+          <span class="bullet-icon" aria-hidden="true">•</span>
+          <div style="min-width:0"><div class="line-text" id="line-${idx}">${escapeHtml(
+          cleaned
+        )}</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <button class="copy-line small" data-text="${escapeHtml(
+          cleaned
+        )}">Copy</button>
+        </div>
+      </div>
+      <div class="line-meta">Subcategory: ${escapeHtml(subName)}</div>
+    `;
+
+        // copy single line: copy cleaned text (no bullet)
+        const copyBtn = card.querySelector(".copy-line");
+        copyBtn.addEventListener("click", (e) => {
+          const t = cleaned;
+          // attempt clipboard write and show feedback
+          navigator.clipboard
+            .writeText(t)
+            .then(() => {
+              const prev = copyBtn.innerText;
+              copyBtn.innerText = "Copied";
+              setTimeout(() => (copyBtn.innerText = prev), 1200);
+            })
+            .catch(() =>
+              alert("Unable to copy — your browser blocked clipboard access.")
+            );
+        });
+
+        detailArea.appendChild(card);
+      });
+
+      if (lines.length === 0) {
+        detailArea.innerHTML = `<div style="padding:20px;color:var(--muted)">No items in this subcategory.</div>`;
+      }
+    }
+
+    /* Back button */
+    backBtn.addEventListener("click", () => {
+      currentSub = null;
+      backBtn.style.display = "none";
+      openTopic(currentTopic);
+    });
+
+    /* Theme toggle */
+    const themeToggle = document.getElementById("themeToggle");
+    themeToggle.addEventListener("click", () => {
+      const root = document.body;
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+    });
+
+    /* Keyboard shortcut for search */
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        globalSearch.focus();
+      }
+    });
+
+    /* -------------------- GLOBAL SEARCH (robust, always works) -------------------- */
+    globalSearch.addEventListener("input", (e) => {
+      const qRaw = e.target.value || "";
+      const q = qRaw.trim().toLowerCase();
+
+      // If query is empty → restore original topic view
+      if (!q) {
+        if (searchResults) {
+          searchResults.style.display = "none";
+          searchResults.innerHTML = "";
+        }
+        // hide detail wrapper when going back to topic view (openTopic will do this too)
+        document.getElementById("detailWrapper").style.display = "none";
+        openTopic(currentTopic);
+        return;
+      }
+
+      // Prepare UI for results
+      if (searchResults) {
+        searchResults.style.display = "none";
+        searchResults.innerHTML = "";
+      }
+      subcardsEl.innerHTML = "";
+      detailArea.innerHTML = "";
+      // Ensure the divider + detail area visible so results show
+      const detailWrapper = document.getElementById("detailWrapper");
+      if (detailWrapper) detailWrapper.style.display = "block";
+
+      contentTitle.innerText = `Search results for: "${qRaw.trim()}"`;
+
+      const results = [];
+
+      // Search across all topics/subcategories/lines
+      for (const topicKey in DATA) {
+        if (!Object.prototype.hasOwnProperty.call(DATA, topicKey)) continue;
+        const topic = DATA[topicKey];
+        if (!topic || !topic.subcategories) continue;
+
+        for (const subName in topic.subcategories) {
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              topic.subcategories,
+              subName
+            )
+          )
+            continue;
+          const lines = topic.subcategories[subName] || [];
+
+          lines.forEach((rawLine) => {
+            // Normalize line for robust searching:
+            // - remove bullet markers, collapse whitespace/newlines to single space
+            // - preserve cleaned display version for copying
+            const cleanedDisplay = cleanLineText(rawLine);
+            const normalized = cleanedDisplay
+              .replace(/\s+/g, " ")
+              .toLowerCase();
+
+            if (normalized.includes(q)) {
+              results.push({
+                topicKey,
+                topicTitle: topic.title || topicKey,
+                subName,
+                text: cleanedDisplay,
+              });
+            }
+          });
+        }
+      }
+
+      // If no results, show friendly message
+      if (results.length === 0) {
+        detailArea.innerHTML = `
+      <div style="padding:20px;color:var(--muted)">
+        No results found for "${escapeHtml(qRaw.trim())}".
+      </div>
+    `;
+        return;
+      }
+
+      // Render each result as a line-card (same UI used elsewhere)
+      results.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "line-card";
+
+        card.innerHTML = `
+      <div class="line-top">
+        <div style="display:flex;align-items:flex-start;gap:8px">
+          <span class="bullet-icon" aria-hidden="true">•</span>
+          <div class="line-text">${escapeHtml(item.text)}</div>
+        </div>
+        <div>
+          <button class="copy-line small">Copy</button>
+        </div>
+      </div>
+      <div class="line-meta">Topic: ${escapeHtml(
+          item.topicTitle
+        )} — Sub: ${escapeHtml(item.subName)}</div>
+    `;
+
+        // attach copy action
+        const copyBtn = card.querySelector(".copy-line");
+        if (copyBtn) {
+          copyBtn.addEventListener("click", () => {
+            navigator.clipboard
+              .writeText(item.text)
+              .then(() => {
+                const prev = copyBtn.innerText;
+                copyBtn.innerText = "Copied";
+                setTimeout(() => (copyBtn.innerText = prev), 1200);
+              })
+              .catch(() => {
+                alert(
+                  "Unable to copy — your browser blocked clipboard access."
+                );
+              });
+          });
+        }
+
+        detailArea.appendChild(card);
+      });
+
+      // optional: scroll to top of results so user sees them immediately
+      if (detailWrapper)
+        detailWrapper.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    /* initial open */
+    openTopic(currentTopic);
+
+    /* Accessibility: focus outline for keyboard users */
+    document.addEventListener("keyup", (e) => {
+      if (e.key === "Tab") document.body.classList.add("show-focus");
+    });
+
+    /* ---------- Utility: escape HTML for safe insertion ---------- */
+    function escapeHtml(text) {
+      if (!text) return "";
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+
+</html>
